@@ -1,6 +1,7 @@
 package com.example.products.products.ui
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
@@ -15,7 +16,7 @@ fun MainApp() {
     ProductsTheme {
         NavHost(navController = navController, startDestination = "list") {
             composable("list") {
-                ListProductsScreen() {
+                ListProductsScreen(viewModel()) {
                     navController.navigate("checkout")
                 }
             }
