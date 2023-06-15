@@ -71,7 +71,7 @@ fun ListProductsScreen(
 private fun ListProducts(
     products: List<Product>,
     totalPrice: Double,
-    onNavigateToCheckout: ()->Unit,
+    onNavigateToCheckout: ()-> Unit,
     onAddItem: (String) -> Unit,
     onRemoveItem: (String) -> Unit,
 ) {
@@ -82,23 +82,49 @@ private fun ListProducts(
         state = lazyListState
 
     ) {
+        item {
+            Title()
+        }
         items(products) {
             CardContent(product = it, onAddItem, onRemoveItem)
         }
         item {
+            checkoutButton(totalPrice, onNavigateToCheckout)
+        }
+    }
+}
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(onClick = onNavigateToCheckout) {
-                        Text(
-                            text =  stringResource(R.string.total_price, totalPrice.formatPriceAsEuro())
-                        )
-                    }
-                }
+@Composable
+private fun Title(){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = stringResource(R.string.cabify_shop),
+            style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.ExtraBold),
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+@Composable
+private fun checkoutButton(
+    totalPrice: Double,
+    onNavigateToCheckout: ()->Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Button(onClick = onNavigateToCheckout) {
+            Text(
+                text = stringResource(R.string.total_price, totalPrice.formatPriceAsEuro())
+            )
         }
     }
 }
