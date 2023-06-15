@@ -1,9 +1,10 @@
 package com.example.products.products.ui.list
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.products.products.data.ProductsRepository
+import com.example.products.products.data.model.Product
+import com.example.products.products.domain.CalculateTotalPriceUseCase
 import com.example.products.products.ui.list.state.ListScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,12 +15,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListProductsViewModel @Inject constructor(
-    private val productsRepository: ProductsRepository
+    private val productsRepository: ProductsRepository,
+    private val calculateTotalPriceUseCase: CalculateTotalPriceUseCase
 ): ViewModel() {
 
     private val _state = MutableStateFlow(ListScreenState())
     val state = _state.asStateFlow()
 
+    private var listProducts : List<Product> = emptyList()
 
     private val mapProducts = mutableMapOf<String, Int>()
 
@@ -27,37 +30,28 @@ class ListProductsViewModel @Inject constructor(
         fetchProducts()
     }
 
-    fun fetchProducts() {
-        Log.d("Test", "Fetching products")
-
+    private fun fetchProducts() {
         viewModelScope.launch {
             showLoading()
             productsRepository.fetchProducts()
                 .onSuccess { products ->
-                    products.forEach {
-                        Log.d("Test", it.name)
-                    }
+                    listProducts = products
+                    updateListState()
+                }.onFailure {
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            products = products
+                            error = "There were an error" //TODO move to the string resources
                         )
                     }
-                }.onFailure {
-                    Log.d("Test", "There where an error")
-                    //Todo handle error state
                 }
         }
     }
 
     fun onAddItem(code: String) {
-        mapProducts[code]?.let {
-            mapProducts[code] = it + 1
-        } ?: kotlin.run {
-            mapProducts[code] = 1
-        }
-
-        Log.d("Test", "Adding item to: "+code+" value: "+mapProducts[code])
+        val quantity = mapProducts[code]?.let { it + 1 } ?: 1
+        mapProducts[code] = quantity
+        updateListState()
     }
 
     fun onRemoveItem(code : String) {
@@ -67,9 +61,21 @@ class ListProductsViewModel @Inject constructor(
             }
         }
 
-        Log.d("Test", "Removing item to: "+code+" value: "+mapProducts[code])
+        updateListState()
     }
 
+    private fun List<Product>.updateQuantities() = this.map { it.copy(quantity = mapProducts[it.code] ?: 0) }
+    //private fun List<Product>.calculateTotalPrice(): Double = sumOf { it.price * it.quantity }
+    private fun updateListState() {
+        val updatedProducts = listProducts.updateQuantities()
+        _state.update {
+            it.copy(
+                isLoading = false,
+                products = updatedProducts,
+                totalPrice = calculateTotalPriceUseCase.invoke(updatedProducts)
+            )
+        }
+    }
 
     private fun showLoading() {
         _state.update {
@@ -77,6 +83,5 @@ class ListProductsViewModel @Inject constructor(
                 isLoading = true
             )
         }
-
     }
 }
