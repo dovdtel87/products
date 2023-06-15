@@ -2,6 +2,7 @@ package com.example.products.products.data
 
 import com.example.products.products.data.mapper.ProductMapper
 import com.example.products.products.data.model.Product
+import com.example.products.products.data.network.api.ProductsApi
 import javax.inject.Inject
 
 class ProductsRepositoryImpl @Inject constructor(
