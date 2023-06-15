@@ -20,6 +20,9 @@ class ListProductsViewModel @Inject constructor(
     private val _state = MutableStateFlow(ListScreenState())
     val state = _state.asStateFlow()
 
+
+    private val mapProducts = mutableMapOf<String, Int>()
+
     init {
         fetchProducts()
     }
@@ -42,9 +45,32 @@ class ListProductsViewModel @Inject constructor(
                     }
                 }.onFailure {
                     Log.d("Test", "There where an error")
+                    //Todo handle error state
                 }
         }
     }
+
+    fun onAddItem(code: String) {
+        mapProducts[code]?.let {
+            mapProducts[code] = it + 1
+        } ?: kotlin.run {
+            mapProducts[code] = 1
+        }
+
+        Log.d("Test", "Adding item to: "+code+" value: "+mapProducts[code])
+    }
+
+    fun onRemoveItem(code : String) {
+        mapProducts[code]?.let {
+            if(it != 0) {
+                mapProducts[code] = it - 1
+            }
+        }
+
+        Log.d("Test", "Removing item to: "+code+" value: "+mapProducts[code])
+    }
+
+
     private fun showLoading() {
         _state.update {
             it.copy(

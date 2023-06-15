@@ -59,8 +59,12 @@ fun ListProductsScreen(
                     ListProducts(
                         products = uiState.products,
                         onNavigateToCheckout = onNavigateToCheckout,
-                        onAddItem = {},
-                        onRemoveItem = {}
+                        onAddItem = { code ->
+                            viewModel.onAddItem(code)
+                        },
+                        onRemoveItem = { code ->
+                            viewModel.onRemoveItem(code)
+                        }
                     )
                 }
             }
@@ -72,8 +76,8 @@ fun ListProductsScreen(
 private fun ListProducts(
     products: List<Product>,
     onNavigateToCheckout: ()->Unit,
-    onAddItem: () -> Unit,
-    onRemoveItem: () -> Unit,
+    onAddItem: (String) -> Unit,
+    onRemoveItem: (String) -> Unit,
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -83,7 +87,7 @@ private fun ListProducts(
 
     ) {
         items(products) {
-            CardContent(product = it)
+            CardContent(product = it, onAddItem, onRemoveItem)
         }
         item {
 
@@ -104,7 +108,11 @@ private fun ListProducts(
 }
 
 @Composable
-private fun CardContent(product: Product) {
+private fun CardContent(
+    product: Product,
+    onAddItem: (String) -> Unit,
+    onRemoveItem: (String) -> Unit
+) {
     val quantityState = remember { mutableStateOf(0) }
 
     Card(
@@ -135,7 +143,10 @@ private fun CardContent(product: Product) {
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(
-                        onClick = { quantityState.value = maxOf(quantityState.value - 1, 0) },
+                        onClick = {
+                            quantityState.value = maxOf(quantityState.value - 1, 0) // TODO move this implementation to VM
+                            onRemoveItem(product.code)
+                      },
                         enabled = quantityState.value > 0
                     ) {
                         Icon(
@@ -148,7 +159,10 @@ private fun CardContent(product: Product) {
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
                     IconButton(
-                        onClick = { quantityState.value += 1 },
+                        onClick = {
+                            quantityState.value += 1 // TODO move this implementation to VM
+                            onAddItem(product.code)
+                          },
                     ) {
                         Icon(
                             Icons.Default.Add,
@@ -197,7 +211,7 @@ fun ListProductsScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 fun CardContentPreview() {
-    CardContent(Product("TSHIRT", "TShirt", 7.5))
+    CardContent(Product("TSHIRT", "TShirt", 7.5),{},{})
 }
 
 @Preview(showBackground = true)
