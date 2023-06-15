@@ -2,9 +2,9 @@ package com.example.products.products.ui.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.products.products.data.ProductsRepository
 import com.example.products.products.data.model.Product
 import com.example.products.products.domain.CalculateTotalPriceUseCase
+import com.example.products.products.domain.FetchProductsUseCase
 import com.example.products.products.ui.list.state.ListScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListProductsViewModel @Inject constructor(
-    private val productsRepository: ProductsRepository,
+    private val fetchProductsUseCase: FetchProductsUseCase,
     private val calculateTotalPriceUseCase: CalculateTotalPriceUseCase
 ): ViewModel() {
 
@@ -33,7 +33,7 @@ class ListProductsViewModel @Inject constructor(
     private fun fetchProducts() {
         viewModelScope.launch {
             showLoading()
-            productsRepository.fetchProducts()
+            fetchProductsUseCase.invoke()
                 .onSuccess { products ->
                     listProducts = products
                     updateListState()
@@ -65,7 +65,7 @@ class ListProductsViewModel @Inject constructor(
     }
 
     private fun List<Product>.updateQuantities() = this.map { it.copy(quantity = mapProducts[it.code] ?: 0) }
-    //private fun List<Product>.calculateTotalPrice(): Double = sumOf { it.price * it.quantity }
+
     private fun updateListState() {
         val updatedProducts = listProducts.updateQuantities()
         _state.update {
