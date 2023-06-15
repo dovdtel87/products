@@ -20,12 +20,12 @@ class CalculateTotalPriceUseCase @Inject constructor(
                 }
 
                 if (discount is Discount.PriceReduction) {
-                    val price = if(product.quantity >= discount.numberToBuy) {
+                    val finalPrice = if(product.quantity >= discount.numberToBuy) {
                         product.price - discount.directDiscount
                     } else {
                         product.price
                     }
-                    total += price * product.quantity
+                    total += finalPrice * product.quantity
                 }
             } ?: kotlin.run {
                 total += product.quantity * product.price
