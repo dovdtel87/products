@@ -170,6 +170,9 @@ private fun CardContent(
                 }
             }
             Text(text = product.price.toString())
+            product.discount?.let { discount ->
+                Text(text = discount)
+            }
         }
     }
 }
