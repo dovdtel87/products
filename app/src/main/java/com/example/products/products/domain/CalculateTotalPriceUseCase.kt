@@ -9,28 +9,28 @@ class CalculateTotalPriceUseCase @Inject constructor(
     private val discountsRepository : DiscountsRepository
 ) {
 
-    fun invoke(products: List<Product>) : Double {
-        var total = 0.0
-        products.forEach { product ->
-            val discount = discountsRepository.getDiscountForProduct(product.code)
-            discount?.let {
-                if (discount is Discount.FreeItem) {
-                    val itemsFree: Int = (product.quantity/discount.numberToBuy)*discount.numberFree
-                    total += (product.quantity - itemsFree) * product.price
-                }
-
-                if (discount is Discount.PriceReduction) {
-                    val finalPrice = if(product.quantity >= discount.numberToBuy) {
-                        product.price - discount.directDiscount
-                    } else {
-                        product.price
-                    }
-                    total += finalPrice * product.quantity
-                }
-            } ?: kotlin.run {
-                total += product.quantity * product.price
+    fun invoke(products: List<Product>): Double {
+        return products.sumOf { product ->
+            when (val discount = discountsRepository.getDiscountForProduct(product.code)) {
+                is Discount.FreeItem -> calculatePriceForFreeItemDiscount(product.quantity, discount.numberToBuy, discount.numberFree, product.price)
+                is Discount.PriceReduction -> calculatePriceForPriceReductionDiscount(product.quantity, discount.numberToBuy, discount.directDiscount, product.price)
+                else -> calculatePriceWithOutDiscount(product.quantity, product.price)
             }
         }
-        return total
     }
+
+    private fun calculatePriceForFreeItemDiscount(quantity: Int, numberToBuy: Int, numberFree: Int, price: Double) : Double {
+        val itemsFree = (quantity / numberToBuy) * numberFree
+        return (quantity - itemsFree) * price
+    }
+
+    private fun calculatePriceForPriceReductionDiscount(quantity: Int, numberToBuy: Int, directDiscount: Double, price: Double) : Double {
+        val finalPrice = when {
+            quantity >= numberToBuy -> price - directDiscount
+            else -> price
+        }
+        return finalPrice * quantity
+    }
+
+    private fun calculatePriceWithOutDiscount(quantity: Int, price: Double) = quantity * price
 }
