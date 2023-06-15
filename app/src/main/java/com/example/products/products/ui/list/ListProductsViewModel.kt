@@ -28,6 +28,7 @@ class ListProductsViewModel @Inject constructor(
         Log.d("Test", "Fetching products")
 
         viewModelScope.launch {
+            showLoading()
             productsRepository.fetchProducts()
                 .onSuccess { products ->
                     products.forEach {
@@ -43,5 +44,13 @@ class ListProductsViewModel @Inject constructor(
                     Log.d("Test", "There where an error")
                 }
         }
+    }
+    private fun showLoading() {
+        _state.update {
+            it.copy(
+                isLoading = true
+            )
+        }
+
     }
 }
