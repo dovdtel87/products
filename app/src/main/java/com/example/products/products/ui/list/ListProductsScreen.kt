@@ -115,8 +115,6 @@ private fun CardContent(
     onAddItem: (String) -> Unit,
     onRemoveItem: (String) -> Unit
 ) {
-    val quantityState = remember { mutableStateOf(0) }
-
     Card(
         modifier = Modifier
             .fillMaxWidth(1f)
@@ -146,10 +144,9 @@ private fun CardContent(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(
                         onClick = {
-                            quantityState.value = maxOf(quantityState.value - 1, 0) // TODO move this implementation to VM
                             onRemoveItem(product.code)
                       },
-                        enabled = quantityState.value > 0
+                        enabled = product.quantity > 0
                     ) {
                         Icon(
                             Icons.Default.Close,
@@ -157,12 +154,11 @@ private fun CardContent(
                         )
                     }
                     Text(
-                        text = quantityState.value.toString(),
+                        text = product.quantity.toString(),
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
                     IconButton(
                         onClick = {
-                            quantityState.value += 1 // TODO move this implementation to VM
                             onAddItem(product.code)
                           },
                     ) {
