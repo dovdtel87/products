@@ -4,5 +4,6 @@ data class Product(
     val code: String,
     val name: String,
     val price: Double,
-    var quantity: Int = 0
+    var quantity: Int = 0,
+    var discount: String? = null
 )
