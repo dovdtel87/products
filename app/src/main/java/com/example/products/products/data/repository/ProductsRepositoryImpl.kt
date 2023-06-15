@@ -1,4 +1,4 @@
-package com.example.products.products.data
+package com.example.products.products.data.repository
 
 import com.example.products.products.data.mapper.ProductMapper
 import com.example.products.products.data.model.Product

@@ -1,6 +1,6 @@
 package com.example.products.products.data.network.model
 
-import com.example.products.products.data.DiscountsRepository
+import com.example.products.products.data.repository.DiscountsRepository
 import com.example.products.products.data.model.Discount
 import javax.inject.Inject
 

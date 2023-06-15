@@ -1,7 +1,7 @@
 package com.example.products.products.domain
 
-import com.example.products.products.data.DiscountsRepository
-import com.example.products.products.data.ProductsRepository
+import com.example.products.products.data.repository.DiscountsRepository
+import com.example.products.products.data.repository.ProductsRepository
 import com.example.products.products.data.model.Product
 import javax.inject.Inject
 

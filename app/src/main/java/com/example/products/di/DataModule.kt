@@ -1,8 +1,8 @@
 package com.example.products.di
 
-import com.example.products.products.data.DiscountsRepository
-import com.example.products.products.data.ProductsRepository
-import com.example.products.products.data.ProductsRepositoryImpl
+import com.example.products.products.data.repository.DiscountsRepository
+import com.example.products.products.data.repository.ProductsRepository
+import com.example.products.products.data.repository.ProductsRepositoryImpl
 import com.example.products.products.data.network.model.FakeDiscountRepositoryImpl
 import dagger.Binds
 import dagger.Module
