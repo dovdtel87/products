@@ -1,8 +1,5 @@
 package com.example.products.products.ui.list
 
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,8 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -35,11 +30,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.products.products.data.model.Product
 import com.example.products.ui.theme.ProductsTheme
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.material.icons.filled.Add
-
-import androidx.compose.material.icons.Icons.Default
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import com.example.products.R
+import com.example.products.products.data.extensions.formatPriceAsEuro
 
 @Composable
 fun ListProductsScreen(
@@ -101,7 +95,7 @@ private fun ListProducts(
                 ) {
                     Button(onClick = onNavigateToCheckout) {
                         Text(
-                            text = "Total: $totalPrice" //TODO MOVE STRING TO STRINGS
+                            text =  stringResource(R.string.total_price, totalPrice.formatPriceAsEuro())
                         )
                     }
                 }
@@ -117,62 +111,68 @@ private fun CardContent(
 ) {
     Card(
         modifier = Modifier
-            .fillMaxWidth(1f)
+            .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
         Column(
-            modifier = Modifier
-                .padding(12.dp)
-                .animateContentSize(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
-                        stiffness = Spring.StiffnessLow
-                    )
-                )
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            content = {
                 Text(
                     text = product.name,
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.ExtraBold
                     )
                 )
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(
-                        onClick = {
-                            onRemoveItem(product.code)
-                      },
-                        enabled = product.quantity > 0
-                    ) {
-                        Icon(
-                            Icons.Default.Close,
-                            contentDescription = "Minus"
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    content = {
+                        Text(text = product.price.formatPriceAsEuro())
+                        QuantityButtonRow(
+                            quantity = product.quantity,
+                            onAddItem = { onAddItem(product.code) },
+                            onRemoveItem = { onRemoveItem(product.code) }
                         )
                     }
-                    Text(
-                        text = product.quantity.toString(),
-                        modifier = Modifier.padding(horizontal = 8.dp)
-                    )
-                    IconButton(
-                        onClick = {
-                            onAddItem(product.code)
-                          },
-                    ) {
-                        Icon(
-                            Icons.Default.Add,
-                            contentDescription = "Plus"
-                        )
-                    }
+                )
+
+                product.discount?.let { discount ->
+                    Text(text = discount)
                 }
             }
-            Text(text = product.price.toString())
-            product.discount?.let { discount ->
-                Text(text = discount)
-            }
+        )
+    }
+}
+
+@Composable
+private fun QuantityButtonRow(
+    quantity: Int,
+    onAddItem: () -> Unit,
+    onRemoveItem: () -> Unit
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        IconButton(
+            onClick = onRemoveItem,
+            enabled = quantity > 0
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.remove),
+                contentDescription = "Minus"
+            )
+        }
+        Text(
+            text = quantity.toString(),
+            modifier = Modifier.padding(horizontal = 8.dp)
+        )
+        IconButton(
+            onClick = onAddItem
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Plus"
+            )
         }
     }
 }
