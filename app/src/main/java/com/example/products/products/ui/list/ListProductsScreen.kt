@@ -58,6 +58,7 @@ fun ListProductsScreen(
                 else -> {
                     ListProducts(
                         products = uiState.products,
+                        totalPrice = uiState.totalPrice,
                         onNavigateToCheckout = onNavigateToCheckout,
                         onAddItem = { code ->
                             viewModel.onAddItem(code)
@@ -75,6 +76,7 @@ fun ListProductsScreen(
 @Composable
 private fun ListProducts(
     products: List<Product>,
+    totalPrice: Double,
     onNavigateToCheckout: ()->Unit,
     onAddItem: (String) -> Unit,
     onRemoveItem: (String) -> Unit,
@@ -99,7 +101,7 @@ private fun ListProducts(
                 ) {
                     Button(onClick = onNavigateToCheckout) {
                         Text(
-                            text = "Navigate to checkout"
+                            text = "Total: $totalPrice" //TODO MOVE STRING TO STRINGS
                         )
                     }
                 }
