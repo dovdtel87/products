@@ -12,13 +12,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -29,6 +35,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.products.products.data.model.Product
 import com.example.products.ui.theme.ProductsTheme
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.material.icons.filled.Add
+
+import androidx.compose.material.icons.Icons.Default
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Person
 
 @Composable
 fun ListProductsScreen(
@@ -45,7 +56,12 @@ fun ListProductsScreen(
                 uiState.isLoading -> { LoadingView() }
                 uiState.error.isNotEmpty() -> { ErrorView() }
                 else -> {
-                    ListProducts(uiState.products) { onNavigateToCheckout()/*viewModel.onAddItem()*/ }
+                    ListProducts(
+                        products = uiState.products,
+                        onNavigateToCheckout = onNavigateToCheckout,
+                        onAddItem = {},
+                        onRemoveItem = {}
+                    )
                 }
             }
         }
@@ -53,7 +69,12 @@ fun ListProductsScreen(
 }
 
 @Composable
-private fun ListProducts(products: List<Product>, onNavigateToCheckout: ()->Unit) { // onAddItem: ()-> Unit) {
+private fun ListProducts(
+    products: List<Product>,
+    onNavigateToCheckout: ()->Unit,
+    onAddItem: () -> Unit,
+    onRemoveItem: () -> Unit,
+) {
     val lazyListState = rememberLazyListState()
 
     LazyColumn(
@@ -84,6 +105,8 @@ private fun ListProducts(products: List<Product>, onNavigateToCheckout: ()->Unit
 
 @Composable
 private fun CardContent(product: Product) {
+    val quantityState = remember { mutableStateOf(0) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth(1f)
@@ -99,15 +122,42 @@ private fun CardContent(product: Product) {
                     )
                 )
         ) {
-            Text(
-                text = product.name,
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.ExtraBold
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = product.name,
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold
+                    )
                 )
-            )
-            /*Text(
-                text = product.price
-            )*/
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(
+                        onClick = { quantityState.value = maxOf(quantityState.value - 1, 0) },
+                        enabled = quantityState.value > 0
+                    ) {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = "Minus"
+                        )
+                    }
+                    Text(
+                        text = quantityState.value.toString(),
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    )
+                    IconButton(
+                        onClick = { quantityState.value += 1 },
+                    ) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = "Plus"
+                        )
+                    }
+                }
+            }
+            Text(text = product.price.toString())
         }
     }
 }
@@ -142,6 +192,12 @@ fun ErrorView() {
 @Composable
 fun ListProductsScreenPreview() {
     ListProductsScreen(onNavigateToCheckout = {})
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CardContentPreview() {
+    CardContent(Product("TSHIRT", "TShirt", 7.5))
 }
 
 @Preview(showBackground = true)
