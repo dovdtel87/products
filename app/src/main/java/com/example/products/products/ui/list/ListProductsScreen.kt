@@ -89,7 +89,7 @@ private fun ListProducts(
             CardContent(product = it, onAddItem, onRemoveItem)
         }
         item {
-            checkoutButton(totalPrice, onNavigateToCheckout)
+            CheckoutButton(totalPrice, onNavigateToCheckout)
         }
     }
 }
@@ -111,7 +111,7 @@ private fun Title(){
     }
 }
 @Composable
-private fun checkoutButton(
+private fun CheckoutButton(
     totalPrice: Double,
     onNavigateToCheckout: ()->Unit
 ) {
