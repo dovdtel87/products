@@ -1,5 +1,6 @@
 package com.example.products.products.ui.list.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,7 +50,7 @@ fun ListProductsScreen(
             val uiState = viewModel.state.collectAsStateWithLifecycle().value
             when {
                 uiState.isLoading -> { LoadingView() }
-                uiState.error.isNotEmpty() -> { ErrorView() }
+                uiState.error != null -> { ErrorView(uiState.error) }
                 else -> {
                     ListProducts(
                         products = uiState.products,
@@ -221,11 +222,11 @@ fun LoadingView() {
 }
 
 @Composable
-fun ErrorView() {
+fun ErrorView(@StringRes error: Int) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "There were an error loading the list of products",
+                text = stringResource(error),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.displaySmall.copy(fontSize = 30.sp)
             )
@@ -254,5 +255,5 @@ fun LoadingScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 fun ErrorScreenPreview() {
-    ErrorView()
+    ErrorView(R.string.error)
 }

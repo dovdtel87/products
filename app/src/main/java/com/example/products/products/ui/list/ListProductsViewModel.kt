@@ -2,6 +2,7 @@ package com.example.products.products.ui.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.products.R
 import com.example.products.data.model.Product
 import com.example.products.products.domain.usecase.UpdateProductsUIUseCase
 import com.example.products.products.domain.usecase.FetchProductsUseCase
@@ -41,7 +42,7 @@ class ListProductsViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            error = "There were an error" //TODO move to the string resources
+                            error = R.string.error
                         )
                     }
                 }
