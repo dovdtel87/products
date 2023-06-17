@@ -1,14 +1,15 @@
-package com.example.products.products.domain
+package com.example.products.products.domain.usecase
 
-import com.example.products.products.data.model.Discount
-import com.example.products.products.data.model.Product
-import com.example.products.products.data.repository.DiscountsRepository
-import com.example.products.products.ui.list.model.ProductUI
+import com.example.products.extensions.formatPriceAsEuro
+import com.example.products.data.model.Discount
+import com.example.products.data.model.Product
+import com.example.products.data.repository.DiscountsRepository
+import com.example.products.products.domain.model.ProductUI
 import javax.inject.Inject
 
 class UpdateProductsUIUseCase @Inject constructor(
-   private val discountsRepository: DiscountsRepository,
-   private val calculatePriceUseCase: CalculatePriceWithDiscountUseCase
+    private val discountsRepository: DiscountsRepository,
+    private val calculatePriceUseCase: CalculatePriceWithDiscountUseCase
 ) {
     fun invoke(products: List<Product>, quantities: Map<String, Int>): Pair<List<ProductUI>, Double>{
         var total = 0.0
@@ -23,7 +24,7 @@ class UpdateProductsUIUseCase @Inject constructor(
                     "You are buying $quantity and getting $numberFree for free!"
                 }
                 ifShouldDisplayPriceReductionMessage(quantity, discount) -> {
-                    "You are buying $quantity and getting ${discount.directDiscount} discount in each!"
+                    "You are buying $quantity and getting ${discount.directDiscount.formatPriceAsEuro()} discount in each!"
                 }
                 else -> ""
             }

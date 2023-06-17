@@ -1,4 +1,4 @@
-package com.example.products.products.ui.list
+package com.example.products.products.ui.list.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,8 +32,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.products.R
-import com.example.products.products.data.extensions.formatPriceAsEuro
-import com.example.products.products.ui.list.model.ProductUI
+import com.example.products.extensions.formatPriceAsEuro
+import com.example.products.products.domain.model.ProductUI
+import com.example.products.products.ui.list.ListProductsViewModel
 
 @Composable
 fun ListProductsScreen(

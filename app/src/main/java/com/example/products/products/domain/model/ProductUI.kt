@@ -1,4 +1,4 @@
-package com.example.products.products.ui.list.model
+package com.example.products.products.domain.model
 
 data class ProductUI(
     val code: String,

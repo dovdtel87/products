@@ -1,6 +1,7 @@
-package com.example.products.products.data.repository
+package com.example.products.products.domain.repository
 
-import com.example.products.products.data.model.Discount
+import com.example.products.data.model.Discount
+import com.example.products.data.repository.DiscountsRepository
 import javax.inject.Inject
 
 class FakeDiscountRepositoryImpl @Inject constructor() : DiscountsRepository {

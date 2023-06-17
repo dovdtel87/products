@@ -1,7 +1,7 @@
-package com.example.products.products.data.mapper
+package com.example.products.data.mapper
 
-import com.example.products.products.data.model.Product
-import com.example.products.products.data.network.model.ProductDto
+import com.example.products.data.model.Product
+import com.example.products.data.network.model.ProductDto
 import javax.inject.Inject
 
 class ProductMapper @Inject constructor() {

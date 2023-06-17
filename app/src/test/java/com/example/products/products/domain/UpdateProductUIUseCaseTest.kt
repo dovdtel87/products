@@ -1,8 +1,10 @@
 package com.example.products.products.domain
 
-import com.example.products.products.data.repository.DiscountsRepository
-import com.example.products.products.data.model.Discount
-import com.example.products.products.data.model.Product
+import com.example.products.data.repository.DiscountsRepository
+import com.example.products.data.model.Discount
+import com.example.products.data.model.Product
+import com.example.products.products.domain.usecase.CalculatePriceWithDiscountUseCase
+import com.example.products.products.domain.usecase.UpdateProductsUIUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

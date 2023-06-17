@@ -1,6 +1,6 @@
-package com.example.products.products.data.model
+package com.example.products.data.model
 
-import com.example.products.products.data.extensions.formatPriceAsEuro
+import com.example.products.extensions.formatPriceAsEuro
 
 sealed class Discount(
     val numberToBuy: Int,

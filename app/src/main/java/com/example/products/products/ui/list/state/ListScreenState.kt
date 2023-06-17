@@ -1,6 +1,6 @@
 package com.example.products.products.ui.list.state
 
-import com.example.products.products.ui.list.model.ProductUI
+import com.example.products.products.domain.model.ProductUI
 
 data class ListScreenState(
     val isLoading: Boolean = false,

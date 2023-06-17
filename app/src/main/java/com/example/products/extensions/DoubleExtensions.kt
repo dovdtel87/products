@@ -1,4 +1,4 @@
-package com.example.products.products.data.extensions
+package com.example.products.extensions
 
 import java.text.NumberFormat
 import java.util.Locale

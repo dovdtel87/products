@@ -1,7 +1,7 @@
-package com.example.products.products.domain
+package com.example.products.products.domain.usecase
 
-import com.example.products.products.data.repository.ProductsRepository
-import com.example.products.products.data.model.Product
+import com.example.products.data.model.Product
+import com.example.products.data.repository.ProductsRepository
 import javax.inject.Inject
 
 class FetchProductsUseCase @Inject constructor(

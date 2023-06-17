@@ -1,4 +1,4 @@
-package com.example.products.products.data.model
+package com.example.products.data.model
 
 data class Product(
     val code: String,

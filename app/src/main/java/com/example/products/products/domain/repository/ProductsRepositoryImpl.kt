@@ -1,8 +1,9 @@
-package com.example.products.products.data.repository
+package com.example.products.products.domain.repository
 
-import com.example.products.products.data.mapper.ProductMapper
-import com.example.products.products.data.model.Product
-import com.example.products.products.data.network.api.ProductsApi
+import com.example.products.data.mapper.ProductMapper
+import com.example.products.data.model.Product
+import com.example.products.data.network.api.ProductsApi
+import com.example.products.data.repository.ProductsRepository
 import javax.inject.Inject
 
 class ProductsRepositoryImpl @Inject constructor(

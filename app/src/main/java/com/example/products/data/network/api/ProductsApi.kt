@@ -1,6 +1,6 @@
-package com.example.products.products.data.network.api
+package com.example.products.data.network.api
 
-import com.example.products.products.data.network.model.ProductResponseDto
+import com.example.products.data.network.model.ProductResponseDto
 import retrofit2.http.GET
 
 interface ProductsApi {

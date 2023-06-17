@@ -2,10 +2,10 @@ package com.example.products.products.ui.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.products.products.data.model.Product
-import com.example.products.products.domain.UpdateProductsUIUseCase
-import com.example.products.products.domain.FetchProductsUseCase
-import com.example.products.products.ui.list.model.ProductUI
+import com.example.products.data.model.Product
+import com.example.products.products.domain.usecase.UpdateProductsUIUseCase
+import com.example.products.products.domain.usecase.FetchProductsUseCase
+import com.example.products.products.domain.model.ProductUI
 import com.example.products.products.ui.list.state.ListScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

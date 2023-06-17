@@ -1,7 +1,7 @@
 package com.example.products.di
 
 import com.example.products.BuildConfig
-import com.example.products.products.data.network.api.ProductsApi
+import com.example.products.data.network.api.ProductsApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

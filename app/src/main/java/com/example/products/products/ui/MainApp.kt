@@ -1,13 +1,12 @@
 package com.example.products.products.ui
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
 import androidx.navigation.compose.rememberNavController
 import com.example.products.products.ui.checkout.CheckoutScreen
-import com.example.products.products.ui.list.ListProductsScreen
+import com.example.products.products.ui.list.components.ListProductsScreen
 import com.example.products.ui.theme.ProductsTheme
 
 @Composable
