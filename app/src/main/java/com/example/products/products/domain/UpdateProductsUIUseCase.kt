@@ -7,30 +7,28 @@ import com.example.products.products.ui.list.model.ProductUI
 import javax.inject.Inject
 
 class UpdateProductsUIUseCase @Inject constructor(
-   private val discountsRepository: DiscountsRepository
+   private val discountsRepository: DiscountsRepository,
+   private val calculatePriceUseCase: CalculatePriceWithDiscountUseCase
 ) {
-    fun invoke(products: List<Product>, quantities: Map<String,Int>) : List<ProductUI> {
+    fun invoke(products: List<Product>, quantities: Map<String, Int>): Pair<List<ProductUI>, Double>{
+        var total = 0.0
         val listProductUI = mutableListOf<ProductUI>()
         products.forEach { product ->
-            val quantity = quantities[product.code] ?: kotlin.run { 0 }
+            val quantity = quantities[product.code] ?: 0
             val discount = discountsRepository.getDiscountForProduct(product.code)
-            var message = ""
-            if(quantity > 0) {
-                discount?.let {
-                    if(discount is Discount.FreeItem) {
-                        if (quantity >= discount.numberToBuy) {
-                            val numberFree = quantity/discount.numberToBuy
-                            message = "You are buying $quantity and getting $numberFree for free!"
-                        }
-                    }
-                    if(discount is Discount.PriceReduction) {
-                        if (quantity >= discount.numberToBuy) {
-                            message = "You are buying "+quantity+" and getting "+discount.directDiscount+" discount in each!"
-                        }
-                    }
+            val message = when {
+                discount == null -> ""
+                ifShouldDisplayFreeItemMessage(quantity, discount) -> {
+                    val numberFree = quantity / discount.numberToBuy
+                    "You are buying $quantity and getting $numberFree for free!"
                 }
+                ifShouldDisplayPriceReductionMessage(quantity, discount) -> {
+                    "You are buying $quantity and getting ${discount.directDiscount} discount in each!"
+                }
+                else -> ""
             }
 
+            total += calculatePriceUseCase.invoke(product, quantity)
             val productUI = ProductUI(
                 code = product.code,
                 name = product.name,
@@ -39,10 +37,11 @@ class UpdateProductsUIUseCase @Inject constructor(
                 discount = discount?.message,
                 message = message
             )
-
             listProductUI.add(productUI)
-
         }
-        return listProductUI
+        return Pair(listProductUI, total)
     }
+
+    private fun ifShouldDisplayFreeItemMessage(quantity: Int, discount: Discount?) = quantity > 0 && discount is Discount.FreeItem && quantity >= discount.numberToBuy
+    private fun ifShouldDisplayPriceReductionMessage(quantity: Int, discount: Discount?) = quantity > 0 && discount is Discount.PriceReduction && quantity >= discount.numberToBuy
 }

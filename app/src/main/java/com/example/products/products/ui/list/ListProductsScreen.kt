@@ -167,6 +167,9 @@ private fun CardContent(
                 product.discount?.let { discount ->
                     Text(text = discount)
                 }
+                product.message?.let { message ->
+                    Text(text = message)
+                }
             }
         )
     }

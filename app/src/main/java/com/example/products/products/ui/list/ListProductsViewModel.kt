@@ -3,9 +3,9 @@ package com.example.products.products.ui.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.products.products.data.model.Product
-import com.example.products.products.domain.CalculateTotalPriceUseCase
 import com.example.products.products.domain.UpdateProductsUIUseCase
 import com.example.products.products.domain.FetchProductsUseCase
+import com.example.products.products.ui.list.model.ProductUI
 import com.example.products.products.ui.list.state.ListScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +17,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ListProductsViewModel @Inject constructor(
     private val fetchProductsUseCase: FetchProductsUseCase,
-    private val calculateTotalPriceUseCase: CalculateTotalPriceUseCase,
     private val updateProductsUIUseCase: UpdateProductsUIUseCase,
 ): ViewModel() {
 
@@ -25,8 +24,7 @@ class ListProductsViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     private var listProducts : List<Product> = emptyList()
-
-    private val mapProducts = mutableMapOf<String, Int>()
+    private val mapQuantities = mutableMapOf<String, Int>()
 
     init {
         fetchProducts()
@@ -51,27 +49,27 @@ class ListProductsViewModel @Inject constructor(
     }
 
     fun onAddItem(code: String) {
-        val quantity = mapProducts[code]?.let { it + 1 } ?: 1
-        mapProducts[code] = quantity
+        val quantity = mapQuantities[code]?.let { it + 1 } ?: 1
+        mapQuantities[code] = quantity
         updateListState()
     }
 
     fun onRemoveItem(code : String) {
-        mapProducts[code]?.let {
+        mapQuantities[code]?.let {
             if(it != 0) {
-                mapProducts[code] = it - 1
+                mapQuantities[code] = it - 1
             }
         }
         updateListState()
     }
 
     private fun updateListState() {
-        val updatedProducts = updateProductsUIUseCase.invoke(listProducts, mapProducts)
+        val uiElements : Pair<List<ProductUI>, Double> = updateProductsUIUseCase.invoke(listProducts, mapQuantities)
         _state.update {
             it.copy(
                 isLoading = false,
-                products = updatedProducts,
-                totalPrice = calculateTotalPriceUseCase.invoke(updatedProducts)
+                products = uiElements.first,
+                totalPrice = uiElements.second
             )
         }
     }

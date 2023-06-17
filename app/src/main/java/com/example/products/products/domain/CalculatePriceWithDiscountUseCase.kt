@@ -2,19 +2,17 @@ package com.example.products.products.domain
 
 import com.example.products.products.data.repository.DiscountsRepository
 import com.example.products.products.data.model.Discount
-import com.example.products.products.ui.list.model.ProductUI
+import com.example.products.products.data.model.Product
 import javax.inject.Inject
 
-class CalculateTotalPriceUseCase @Inject constructor(
+class CalculatePriceWithDiscountUseCase @Inject constructor(
     private val discountsRepository : DiscountsRepository
 ) {
-
-    fun invoke(products: List<ProductUI>): Double {
-        return products.sumOf { product ->
-            when (val discount = discountsRepository.getDiscountForProduct(product.code)) {
-                is Discount.FreeItem -> calculatePriceForFreeItemDiscount(product.quantity, discount.numberToBuy, discount.numberFree, product.price)
-                is Discount.PriceReduction -> calculatePriceForPriceReductionDiscount(product.quantity, discount.numberToBuy, discount.directDiscount, product.price)
-                else -> calculatePriceWithOutDiscount(product.quantity, product.price)
+    fun invoke(product: Product, quantity: Int): Double {
+        return  when (val discount = discountsRepository.getDiscountForProduct(product.code)) {
+                is Discount.FreeItem -> calculatePriceForFreeItemDiscount(quantity, discount.numberToBuy, discount.numberFree, product.price)
+                is Discount.PriceReduction -> calculatePriceForPriceReductionDiscount(quantity, discount.numberToBuy, discount.directDiscount, product.price)
+                else -> calculatePriceWithOutDiscount(quantity, product.price)
             }
         }
     }
@@ -33,4 +31,3 @@ class CalculateTotalPriceUseCase @Inject constructor(
     }
 
     private fun calculatePriceWithOutDiscount(quantity: Int, price: Double) = quantity * price
-}
