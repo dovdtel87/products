@@ -27,13 +27,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.products.products.data.model.Product
 import com.example.products.ui.theme.ProductsTheme
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.products.R
 import com.example.products.products.data.extensions.formatPriceAsEuro
+import com.example.products.products.ui.list.model.ProductUI
 
 @Composable
 fun ListProductsScreen(
@@ -69,7 +69,7 @@ fun ListProductsScreen(
 
 @Composable
 private fun ListProducts(
-    products: List<Product>,
+    products: List<ProductUI>,
     totalPrice: Double,
     onNavigateToCheckout: ()-> Unit,
     onAddItem: (String) -> Unit,
@@ -131,7 +131,7 @@ private fun CheckoutButton(
 
 @Composable
 private fun CardContent(
-    product: Product,
+    product: ProductUI,
     onAddItem: (String) -> Unit,
     onRemoveItem: (String) -> Unit
 ) {
@@ -238,7 +238,7 @@ fun ListProductsScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 fun CardContentPreview() {
-    CardContent(Product("TSHIRT", "TShirt", 7.5),{},{})
+    CardContent(ProductUI("TSHIRT", "TShirt", 7.5),{},{})
 }
 
 @Preview(showBackground = true)

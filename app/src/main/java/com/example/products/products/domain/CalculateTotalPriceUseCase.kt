@@ -2,14 +2,14 @@ package com.example.products.products.domain
 
 import com.example.products.products.data.repository.DiscountsRepository
 import com.example.products.products.data.model.Discount
-import com.example.products.products.data.model.Product
+import com.example.products.products.ui.list.model.ProductUI
 import javax.inject.Inject
 
 class CalculateTotalPriceUseCase @Inject constructor(
     private val discountsRepository : DiscountsRepository
 ) {
 
-    fun invoke(products: List<Product>): Double {
+    fun invoke(products: List<ProductUI>): Double {
         return products.sumOf { product ->
             when (val discount = discountsRepository.getDiscountForProduct(product.code)) {
                 is Discount.FreeItem -> calculatePriceForFreeItemDiscount(product.quantity, discount.numberToBuy, discount.numberFree, product.price)

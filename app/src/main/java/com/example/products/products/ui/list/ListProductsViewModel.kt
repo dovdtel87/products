@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.products.products.data.model.Product
 import com.example.products.products.domain.CalculateTotalPriceUseCase
+import com.example.products.products.domain.UpdateProductsUIUseCase
 import com.example.products.products.domain.FetchProductsUseCase
 import com.example.products.products.ui.list.state.ListScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ListProductsViewModel @Inject constructor(
     private val fetchProductsUseCase: FetchProductsUseCase,
-    private val calculateTotalPriceUseCase: CalculateTotalPriceUseCase
+    private val calculateTotalPriceUseCase: CalculateTotalPriceUseCase,
+    private val updateProductsUIUseCase: UpdateProductsUIUseCase,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(ListScreenState())
@@ -60,14 +62,11 @@ class ListProductsViewModel @Inject constructor(
                 mapProducts[code] = it - 1
             }
         }
-
         updateListState()
     }
 
-    private fun List<Product>.updateQuantities() = this.map { it.copy(quantity = mapProducts[it.code] ?: 0) }
-
     private fun updateListState() {
-        val updatedProducts = listProducts.updateQuantities()
+        val updatedProducts = updateProductsUIUseCase.invoke(listProducts, mapProducts)
         _state.update {
             it.copy(
                 isLoading = false,
