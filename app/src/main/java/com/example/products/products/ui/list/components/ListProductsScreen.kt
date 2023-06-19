@@ -3,6 +3,7 @@ package com.example.products.products.ui.list.components
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -87,20 +88,30 @@ private fun ListProducts(
 ) {
     val lazyListState = rememberLazyListState()
 
-    LazyColumn(
-        Modifier.fillMaxSize(),
-        state = lazyListState
+        LazyColumn(
+            Modifier.fillMaxSize(),
+            state = lazyListState,
 
-    ) {
-        item {
-            Title()
-        }
-        items(products) {
-            CardContent(product = it, onAddItem, onRemoveItem)
-        }
-        item {
-            CheckoutButton(totalPrice, onNavigateToCheckout)
-        }
+        ) {
+            item {
+                Title()
+            }
+            items(products) {
+                CardContent(product = it, onAddItem, onRemoveItem)
+            }
+            item {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.total_price, totalPrice.formatPriceAsEuro()),
+                        style = MaterialTheme.typography.displaySmall.copy(fontSize = 30.sp),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(start = 8.dp, top = 8.dp, end = 8.dp)
+                    )
+                }
+            }
     }
 }
 
@@ -120,25 +131,6 @@ private fun Title(){
         )
     }
 }
-@Composable
-private fun CheckoutButton(
-    totalPrice: Double,
-    onNavigateToCheckout: ()->Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Button(onClick = onNavigateToCheckout) {
-            Text(
-                text = stringResource(R.string.total_price, totalPrice.formatPriceAsEuro())
-            )
-        }
-    }
-}
-
 @Composable
 private fun CardContent(
     product: ProductUI,
