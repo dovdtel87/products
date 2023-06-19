@@ -46,7 +46,6 @@ import com.example.products.products.ui.list.state.ListScreenState
 @Composable
 fun ListProductsScreen(
     viewModel: ListProductsViewModel = hiltViewModel(),
-    onNavigateToCheckout: () -> Unit
 ) {
     ProductsTheme {
         Surface(
@@ -64,7 +63,6 @@ fun ListProductsScreen(
                     ListProducts(
                         products = uiState.products,
                         totalPrice = uiState.totalPrice,
-                        onNavigateToCheckout = onNavigateToCheckout,
                         onAddItem = { code ->
                             viewModel.onAddItem(code)
                         },
@@ -82,7 +80,6 @@ fun ListProductsScreen(
 private fun ListProducts(
     products: List<ProductUI>,
     totalPrice: Double,
-    onNavigateToCheckout: ()-> Unit,
     onAddItem: (String) -> Unit,
     onRemoveItem: (String) -> Unit,
 ) {
@@ -255,7 +252,7 @@ fun ErrorView(@StringRes error: Int, onRetry: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun ListProductsScreenPreview() {
-    ListProductsScreen(onNavigateToCheckout = {})
+    ListProductsScreen()
 }
 
 @Preview(showBackground = true)
