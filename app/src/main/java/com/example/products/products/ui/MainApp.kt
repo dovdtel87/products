@@ -5,7 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
 import androidx.navigation.compose.rememberNavController
-import com.example.products.products.ui.list.components.ListProductsScreen
+import com.example.products.products.ui.list.screen.ListProductsScreen
 import com.example.products.ui.theme.ProductsTheme
 
 @Composable
