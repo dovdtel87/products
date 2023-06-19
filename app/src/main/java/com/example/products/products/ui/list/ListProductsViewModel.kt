@@ -20,8 +20,8 @@ class ListProductsViewModel @Inject constructor(
     private val fetchProductsUseCase: FetchProductsUseCase,
     private val updateProductsUIUseCase: UpdateProductsUIUseCase,
 ): ViewModel() {
-
-    private val _state = MutableStateFlow(ListScreenState())
+    
+    private val _state = MutableStateFlow<ListScreenState>(ListScreenState.Loading)
     val state = _state.asStateFlow()
 
     private var listProducts : List<Product> = emptyList()
@@ -40,10 +40,7 @@ class ListProductsViewModel @Inject constructor(
                     updateListState()
                 }.onFailure {
                     _state.update {
-                        it.copy(
-                            isLoading = false,
-                            error = R.string.error
-                        )
+                        ListScreenState.Error(R.string.error)
                     }
                 }
         }
@@ -67,19 +64,13 @@ class ListProductsViewModel @Inject constructor(
     private fun updateListState() {
         val uiElements : Pair<List<ProductUI>, Double> = updateProductsUIUseCase.invoke(listProducts, mapQuantities)
         _state.update {
-            it.copy(
-                isLoading = false,
-                products = uiElements.first,
-                totalPrice = uiElements.second
-            )
+            ListScreenState.Content(uiElements.first, uiElements.second)
         }
     }
 
     private fun showLoading() {
         _state.update {
-            it.copy(
-                isLoading = true
-            )
+            ListScreenState.Loading
         }
     }
 }

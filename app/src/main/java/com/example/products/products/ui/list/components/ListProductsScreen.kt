@@ -36,6 +36,7 @@ import com.example.products.R
 import com.example.products.extensions.formatPriceAsEuro
 import com.example.products.products.domain.model.ProductUI
 import com.example.products.products.ui.list.ListProductsViewModel
+import com.example.products.products.ui.list.state.ListScreenState
 
 @Composable
 fun ListProductsScreen(
@@ -47,11 +48,10 @@ fun ListProductsScreen(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            val uiState = viewModel.state.collectAsStateWithLifecycle().value
-            when {
-                uiState.isLoading -> { LoadingView() }
-                uiState.error != null -> { ErrorView(uiState.error) }
-                else -> {
+            when(val uiState = viewModel.state.collectAsStateWithLifecycle().value) {
+                is ListScreenState.Loading -> { LoadingView() }
+                is ListScreenState.Error -> { ErrorView(uiState.errorMessage) }
+                is ListScreenState.Content -> {
                     ListProducts(
                         products = uiState.products,
                         totalPrice = uiState.totalPrice,
