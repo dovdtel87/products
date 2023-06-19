@@ -1,11 +1,14 @@
 package com.example.products.products.ui.list.components
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -32,6 +35,7 @@ import com.example.products.ui.theme.ProductsTheme
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import com.example.products.R
 import com.example.products.extensions.formatPriceAsEuro
 import com.example.products.products.domain.model.ProductUI
@@ -50,7 +54,11 @@ fun ListProductsScreen(
         ) {
             when(val uiState = viewModel.state.collectAsStateWithLifecycle().value) {
                 is ListScreenState.Loading -> { LoadingView() }
-                is ListScreenState.Error -> { ErrorView(uiState.errorMessage) }
+                is ListScreenState.Error -> {
+                    ErrorView(uiState.errorMessage) {
+                        viewModel.fetchProducts()
+                    }
+                }
                 is ListScreenState.Content -> {
                     ListProducts(
                         products = uiState.products,
@@ -222,14 +230,32 @@ fun LoadingView() {
 }
 
 @Composable
-fun ErrorView(@StringRes error: Int) {
+fun ErrorView(@StringRes error: Int, onRetry: () -> Unit) {
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_connection_error),
+                contentDescription = "Connection Error"
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(error),
                 color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.displaySmall.copy(fontSize = 30.sp)
+                style = MaterialTheme.typography.displaySmall.copy(fontSize = 30.sp),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(start = 8.dp, end = 8.dp)
             )
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = onRetry) {
+                Text(
+                    text = stringResource(R.string.retry)
+                )
+            }
         }
     }
 }
@@ -255,5 +281,5 @@ fun LoadingScreenPreview() {
 @Preview(showBackground = true)
 @Composable
 fun ErrorScreenPreview() {
-    ErrorView(R.string.error)
+    ErrorView(R.string.error) {}
 }

@@ -20,7 +20,7 @@ class ListProductsViewModel @Inject constructor(
     private val fetchProductsUseCase: FetchProductsUseCase,
     private val updateProductsUIUseCase: UpdateProductsUIUseCase,
 ): ViewModel() {
-    
+
     private val _state = MutableStateFlow<ListScreenState>(ListScreenState.Loading)
     val state = _state.asStateFlow()
 
@@ -31,7 +31,7 @@ class ListProductsViewModel @Inject constructor(
         fetchProducts()
     }
 
-    private fun fetchProducts() {
+    fun fetchProducts() {
         viewModelScope.launch {
             showLoading()
             fetchProductsUseCase.invoke()

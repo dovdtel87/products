@@ -15,7 +15,7 @@ fun MainApp() {
     ProductsTheme {
         NavHost(navController = navController, startDestination = "list") {
             composable("list") {
-                ListProductsScreen() {
+                ListProductsScreen {
                     navController.navigate("checkout")
                 }
             }
